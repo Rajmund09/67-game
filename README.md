@@ -110,5 +110,12 @@ npm run test:watch
 
 ## 👤 Author & Credits
 
+
 **Rajmund09**  
 Explore more projects on my [Portfolio](https://prabhu-shankar-portfolio.vercel.app/).
+
+## Acknowledgements
+
+The visual direction and design inspiration for this project were influenced by the work of Tomasz Smajda (@ITomPoland).
+
+This project was independently designed and developed, including the application architecture, implementation, animations, and game logic.
