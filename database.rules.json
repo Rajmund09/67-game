@@ -1,0 +1,24 @@
+{
+  "rules": {
+    "leaderboard": {
+      // Każdy może czytać ranking
+      ".read": true,
+      
+      // Zapisujemy pojedyncze wpisy w 'leaderboard'
+      "$entry_id": {
+        // Tylko tworzenie nowych wpisów dla zwykłych użytkowników, usuwanie tylko dla admina
+        ".write": "(!data.exists() && newData.exists()) || auth != null",
+        
+        // Walidacja nowo przesyłanego wyniku (szczególnie przez API/oszustów)
+        ".validate": "newData.hasChildren(['name', 'score', 'consentGiven']) && 
+                      newData.child('score').isNumber() && 
+                      newData.child('score').val() >= 0 && 
+                      newData.child('score').val() <= 250 && 
+                      newData.child('name').isString() && 
+                      newData.child('name').val().length > 0 && 
+                      newData.child('name').val().length <= 30 &&
+                      newData.child('consentGiven').isBoolean()"
+      }
+    }
+  }
+}
