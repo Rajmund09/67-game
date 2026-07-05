@@ -1,0 +1,20 @@
+/**
+ * 67 GAME — Main Stylesheet Entry Point
+ *
+ * This file imports all CSS modules in cascade order.
+ * Each module is self-contained and handles one concern:
+ *
+ *   base.css        → CSS variables, reset, typography
+ *   header.css      → Marquee, hero "67", layout containers
+ *   game.css        → Game HUD, cards, camera effects, particles
+ *   components.css  → Camera, certificate, admin, result screens
+ *   preloader.css   → Preloader, odometer, horizon lines
+ *   responsive.css  → Media queries for all breakpoints
+ */
+
+@import './styles/base.css';
+@import './styles/header.css';
+@import './styles/game.css';
+@import './styles/components.css';
+@import './styles/preloader.css';
+@import './styles/responsive.css';

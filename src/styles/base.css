@@ -1,0 +1,105 @@
+/* ============================
+   BASE — Variables, Reset, Typography
+   ============================ */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap');
+
+:root {
+  --neo-bg: #f4f0ea;
+  /* warm muted white */
+  --neo-black: #111111;
+  --neo-white: #ffffff;
+  --neo-blue: #5D00FF;   /* Deep Purple */
+  --neo-yellow: #FF4D00; /* Neon Orange */
+  --neo-pink: #00FFC4;   /* Cyan */
+  --neo-green: #FF00E6;  /* Magenta */
+
+  --border-width: 4px;
+  --shadow-color: var(--neo-black);
+  --shadow-offset: 8px;
+
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-heading: 'Space Grotesk', sans-serif;
+
+  /* ============================
+     Z-INDEX SYSTEM
+     ============================ */
+  --z-bg: -10;
+  --z-base: 0;
+  --z-flat: 1;
+  --z-content: 10;
+  --z-ui: 100;
+  --z-game-overlay: 200;
+  --z-header: 300;
+  --z-odometer: 400;
+  --z-footer: 500;
+  --z-modal: 1000;
+  --z-preloader: 150;
+  --z-noise: 3000;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-heading);
+  background-color: var(--neo-yellow);
+  background-image: 
+    linear-gradient(45deg, var(--neo-black) 25%, transparent 25%, transparent 75%, var(--neo-black) 75%, var(--neo-black)),
+    linear-gradient(45deg, var(--neo-black) 25%, transparent 25%, transparent 75%, var(--neo-black) 75%, var(--neo-black));
+  background-size: 60px 60px;
+  background-position: 0 0, 30px 30px;
+  color: var(--neo-black);
+  min-height: 100vh;
+  overflow-x: hidden;
+  /* Hide scrollbar for IE, Edge and Firefox */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  position: relative;
+  animation: checkerboardMove 4s linear infinite;
+}
+
+@keyframes checkerboardMove {
+  0% {
+    background-position: 0 0, 30px 30px;
+  }
+  100% {
+    background-position: 60px 60px, 90px 90px;
+  }
+}
+
+/* Crumpled texture overlay using SVG noise */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: var(--z-noise);
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.02' numOctaves='5' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='1 0 0 0 0, 0 1 0 0 0, 0 0 1 0 0, 0 0 0 0.15 0' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  mix-blend-mode: multiply;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+::-webkit-scrollbar {
+  display: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html.is-animating,
+body.is-animating {
+  overflow: hidden !important;
+}
+
+/* ============================
+   GLOBAL REDUCED MOTION
+   Respects user OS preference — kills all animations for accessibility + performance.
+   ============================ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
