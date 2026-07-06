@@ -1,0 +1,706 @@
+/* ============================
+   PRELOADER — Loading Screen, Odometer, Horizon
+   ============================ */
+/* ============================================
+   PRELOADER â€” AWWWARDS 2026 KINETIC BRUTALIST
+   ============================================ */
+
+.preloader {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-preloader);
+  background-color: transparent;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Film grain inside preloader */
+.preloader__grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: var(--z-content);
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='1'/%3E%3C/svg%3E");
+  mix-blend-mode: multiply;
+}
+
+/* Main content area â€” fills viewport below hero, no scroll */
+.preloader__content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  /* JS-measured: --pl-content-top positions content below the odometer */
+  padding: 0 clamp(1rem, 3vw, 2rem) clamp(3vh, 5vh, 8vh) clamp(1rem, 3vw, 2rem);
+  position: relative;
+  z-index: var(--z-base);
+  gap: clamp(0.75rem, 2.5vh, 2rem);
+  max-height: 100vh;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* ============================
+   KINETIC 67 HERO â€” PRELOADER
+   ============================ */
+
+.preloader__hero {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  user-select: none;
+  position: relative;
+}
+
+.preloader__six-wrap,
+.preloader__seven-wrap {
+  position: relative;
+}
+
+.preloader__six,
+.preloader__seven {
+  font-size: clamp(6rem, 18vw, 13rem);
+  font-weight: 900;
+  font-family: var(--font-heading);
+  color: var(--neo-white);
+  -webkit-text-stroke: 3px var(--neo-black);
+  text-shadow: 6px 6px 0px var(--neo-black);
+  letter-spacing: -4px;
+  line-height: 0.85;
+  display: inline-block;
+  position: relative;
+}
+
+.preloader__six {
+  background: var(--neo-blue);
+  padding: 0.1em 0.15em 0.1em 0.25em;
+  border: var(--border-width) solid var(--neo-black);
+  border-radius: 16px 4px 16px 4px;
+  box-shadow: 6px 6px 0px var(--neo-black);
+  animation:
+    preloaderSixEntry 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) both,
+    preloaderFloat 3s ease-in-out 1s infinite;
+}
+
+.preloader__seven {
+  background: var(--neo-pink);
+  padding: 0.1em 0.25em 0.1em 0.15em;
+  border: var(--border-width) solid var(--neo-black);
+  border-radius: 4px 16px 4px 16px;
+  box-shadow: 6px 6px 0px var(--neo-black);
+  animation:
+    preloaderSevenEntry 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.15s both,
+    preloaderFloatSeven 3s ease-in-out 1.2s infinite;
+}
+
+@keyframes preloaderSixEntry {
+  0% {
+    transform: rotate(-20deg) translateY(-120px) scale(0.3);
+    opacity: 0;
+  }
+
+  60% {
+    transform: rotate(4deg) translateY(10px) scale(1.05);
+    opacity: 1;
+  }
+
+  100% {
+    transform: rotate(-6deg) translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes preloaderSevenEntry {
+  0% {
+    transform: rotate(20deg) translateY(-120px) translateX(20px) scale(0.3);
+    opacity: 0;
+  }
+
+  60% {
+    transform: rotate(-3deg) translateY(10px) scale(1.05);
+    opacity: 1;
+  }
+
+  100% {
+    transform: rotate(5deg) translateY(-8px) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes preloaderFloat {
+
+  0%,
+  100% {
+    transform: rotate(-6deg) translateY(0);
+  }
+
+  33% {
+    transform: rotate(-4deg) translateY(-6px);
+  }
+
+  66% {
+    transform: rotate(-7deg) translateY(3px);
+  }
+}
+
+@keyframes preloaderFloatSeven {
+
+  0%,
+  100% {
+    transform: rotate(5deg) translateY(-8px);
+  }
+
+  33% {
+    transform: rotate(3deg) translateY(-14px);
+  }
+
+  66% {
+    transform: rotate(6deg) translateY(-5px);
+  }
+}
+
+/* ============================================
+   ODOMETER â€” Shared Global Element
+   Persists between preloader â†’ start screen.
+   Like hero-67, uses CSS transitions to move.
+   ============================================ */
+
+.odometer-global {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: calc(var(--z-header) + 1);
+  pointer-events: none;
+}
+
+/* Slot base â€” ALWAYS absolute, transition handles movement */
+.odometer-global .odometer__slot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: transform 0.9s cubic-bezier(0.75, 0, 0.25, 1),
+              width 0.9s cubic-bezier(0.75, 0, 0.25, 1),
+              height 0.9s cubic-bezier(0.75, 0, 0.25, 1),
+              border-radius 0.9s cubic-bezier(0.75, 0, 0.25, 1),
+              background 0.3s ease,
+              box-shadow 0.3s ease;
+  will-change: transform;
+}
+
+/* === PRELOADING STATE: JS-measured positions via custom properties === */
+.odometer-global--preloading .odometer__slot--left {
+  transform: translate(calc(50vw - var(--pl-odo-spacing, 7rem) - 50%), calc(var(--pl-odo-y, 55vh) - 50%));
+}
+
+.odometer-global--preloading .odometer__slot--center {
+  transform: translate(calc(50vw - 50%), calc(var(--pl-odo-y, 55vh) - 50%));
+}
+
+.odometer-global--preloading .odometer__slot--right {
+  transform: translate(calc(50vw + var(--pl-odo-spacing, 7rem) - 50%), calc(var(--pl-odo-y, 55vh) - 50%));
+}
+
+/* === START STATE: each slot flies to its card position === */
+
+/* Left slot â†’ start-card position (left side) */
+.odometer-global--transitioning .odometer__slot--left,
+.odometer-global--start .odometer__slot--left {
+  transform: translate(calc(var(--target-x, 25vw) - 50%), calc(var(--target-y, 50vh) - 50%));
+  background: var(--neo-pink);
+  border: 6px solid var(--neo-black) !important;
+  border-radius: 40px 90px 30px 80px !important;
+  box-shadow: 
+    10px 15px 0 var(--neo-blue),
+    25px 30px 40px rgba(0, 0, 0, 0.3),
+    inset -15px -15px 25px rgba(0, 0, 0, 0.2),
+    inset 15px 15px 25px rgba(255, 255, 255, 0.8) !important;
+}
+
+/* Center slot â†’ hero-game-label position (under header) */
+.odometer-global--transitioning .odometer__slot--center,
+.odometer-global--start .odometer__slot--center {
+  transform: translate(calc(var(--target-x, 50vw) - 50%), calc(var(--target-y, 110px) - 50%)) rotate(-3deg);
+  background: var(--neo-white);
+}
+
+/* Right slot â†’ leaderboard position (right side) */
+.odometer-global--transitioning .odometer__slot--right,
+.odometer-global--start .odometer__slot--right {
+  transform: translate(calc(var(--target-x, 75vw) - 50%), calc(var(--target-y, 50vh) - 50%));
+  background: repeating-linear-gradient(
+    45deg,
+    var(--neo-white),
+    var(--neo-white) 15px,
+    #e5e7eb 15px,
+    #e5e7eb 30px
+  );
+}
+
+/* === EXIT ANIMATION (START -> GAME) === */
+.odometer-global--exiting .odometer__slot--left {
+  animation: slotExitLeft 0.4s cubic-bezier(0.75, 0, 0.25, 1) forwards;
+}
+.odometer-global--exiting .odometer__slot--center {
+  animation: slotExitCenter 0.4s cubic-bezier(0.75, 0, 0.25, 1) 0.05s forwards;
+}
+.odometer-global--exiting .odometer__slot--right {
+  animation: slotExitRight 0.4s cubic-bezier(0.75, 0, 0.25, 1) 0.1s forwards;
+}
+
+/* Slot exit keyframes — GPU-only: transform + opacity, NO filter:blur() */
+@keyframes slotExitLeft {
+  from {
+    transform: translate(calc(var(--target-x, 25vw) - 50%), calc(var(--target-y, 50vh) - 50%));
+    opacity: 1;
+  }
+  to { 
+    transform: translate(calc(var(--target-x, 25vw) - 50% - 150px), calc(var(--target-y, 50vh) - 50% + 50px)) rotate(-15deg) scale(0.8);
+    opacity: 0; 
+  }
+}
+
+@keyframes slotExitCenter {
+  from {
+    transform: translate(calc(var(--target-x, 50vw) - 50%), calc(var(--target-y, 110px) - 50%)) rotate(-3deg);
+    opacity: 1;
+  }
+  to { 
+    transform: translate(calc(var(--target-x, 50vw) - 50%), calc(var(--target-y, 110px) - 50% - 40px)) rotate(-3deg) scale(0.9);
+    opacity: 0; 
+  }
+}
+
+@keyframes slotExitRight {
+  from {
+    transform: translate(calc(var(--target-x, 75vw) - 50%), calc(var(--target-y, 50vh) - 50%));
+    opacity: 1;
+  }
+  to { 
+    transform: translate(calc(var(--target-x, 75vw) - 50% + 150px), calc(var(--target-y, 50vh) - 50% + 50px)) rotate(15deg) scale(0.8);
+    opacity: 0; 
+  }
+}
+
+/* === RETURN ANIMATION (RESULT -> START) === */
+.odometer-global--returning .odometer__slot--left {
+  animation: slotReturnLeft 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+}
+.odometer-global--returning .odometer__slot--center {
+  animation: slotReturnCenter 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.1s both;
+}
+.odometer-global--returning .odometer__slot--right {
+  animation: slotReturnRight 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.2s both;
+}
+
+/* Hide the green curtain animation during return */
+.odometer-global--returning .odometer__slot::after {
+  display: none !important;
+}
+
+/* Slot return keyframes — GPU-only: transform + opacity, NO filter:blur() */
+@keyframes slotReturnLeft {
+  from { 
+    transform: translate(calc(var(--target-x, 25vw) - 50% - 150px), calc(var(--target-y, 50vh) - 50% + 100px)) rotate(-25deg) scale(0.8);
+    opacity: 0; 
+  }
+  to { 
+    transform: translate(calc(var(--target-x, 25vw) - 50%), calc(var(--target-y, 50vh) - 50%));
+    opacity: 1; 
+  }
+}
+
+@keyframes slotReturnCenter {
+  from { 
+    transform: translate(calc(var(--target-x, 50vw) - 50%), calc(var(--target-y, 110px) - 50% - 40px)) rotate(-10deg) scale(0.85);
+    opacity: 0; 
+  }
+  to { 
+    transform: translate(calc(var(--target-x, 50vw) - 50%), calc(var(--target-y, 110px) - 50%)) rotate(-3deg) scale(1);
+    opacity: 1; 
+  }
+}
+
+@keyframes slotReturnRight {
+  from { 
+    transform: translate(calc(var(--target-x, 75vw) - 50% + 150px), calc(var(--target-y, 50vh) - 50% + 100px)) rotate(25deg) scale(0.8);
+    opacity: 0; 
+  }
+  to { 
+    transform: translate(calc(var(--target-x, 75vw) - 50%), calc(var(--target-y, 50vh) - 50%));
+    opacity: 1; 
+  }
+}
+
+/* Hide digits on START screen â€” slots become blank cards */
+.odometer-global--transitioning .odometer__digit-track,
+.odometer-global--start .odometer__digit-track {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+/* Phase 3: Green curtain overlay on slots */
+.odometer-global .odometer__slot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--neo-yellow);
+  z-index: var(--z-content);
+  opacity: 0;
+  transition: transform 0.6s cubic-bezier(0.75, 0, 0.25, 1),
+              opacity 0.4s ease;
+}
+
+/* Curtain becomes visible during transition and START state */
+.odometer-global--transitioning .odometer__slot::after,
+.odometer-global--start .odometer__slot::after {
+  opacity: 1;
+}
+
+/* Curtain slides up when revealed */
+.odometer-global--revealed .odometer__slot::after {
+  transform: translateY(-100%);
+}
+
+/* Content layer inside slots â€” hidden behind curtain */
+.odometer__content {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-flat);
+  padding: 2rem 1.5rem;
+  opacity: 0;
+  pointer-events: none;
+  overflow-y: auto;
+}
+
+.odometer-global--revealed .odometer__content {
+  opacity: 1;
+  pointer-events: auto;
+  transition: opacity 0.3s ease-out 0.3s;
+}
+
+/* Center slot label content */
+.odometer__content--label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.4rem 1.5rem;
+  font-family: var(--font-mono);
+  font-size: clamp(1rem, 2vw, 1.4rem);
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  color: var(--neo-black);
+  white-space: nowrap;
+}
+
+
+
+/* Removed pointer-events: auto on wrapper so it doesn't block Admin button. Children handle it individually. */
+
+.odometer__slot {
+  width: clamp(2.8rem, 6vw + 0.5rem, 5.5rem);
+  height: clamp(3.5rem, 8vw + 0.5rem, 7rem);
+  overflow: hidden;
+  background: var(--neo-white);
+  border: var(--border-width) solid var(--neo-black);
+  border-radius: clamp(6px, 1vw, 10px);
+  box-shadow: clamp(3px, 0.5vw, 6px) clamp(3px, 0.5vw, 6px) 0px var(--neo-black);
+  position: relative;
+  contain: layout paint style;
+  /* Only GPU-acceleratable property in will-change — width/height can't be GPU-accelerated */
+  will-change: transform;
+}
+
+.odometer__digit-track {
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  will-change: transform;
+}
+
+.odometer__digit {
+  width: 100%;
+  height: clamp(3.5rem, 8vw + 0.5rem, 7rem);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: clamp(2rem, 5vw + 0.5rem, 4.5rem);
+  font-weight: 900;
+  color: var(--neo-black);
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+/* Done state â€” yellow glow (only in preloader, before screen changes to START or transitioning starts) */
+.odometer-global:not(.odometer-global--start):not(.odometer-global--transitioning).odometer--done .odometer__slot {
+  background: var(--neo-yellow);
+  box-shadow: 5px 5px 0px var(--neo-black), 0 0 20px rgba(212, 255, 0, 0.4);
+}
+
+@keyframes odometerEntry {
+  0% {
+    opacity: 0;
+    margin-top: 30px;
+    scale: 0.7;
+  }
+  60% {
+    opacity: 1;
+    margin-top: -5px;
+    scale: 1.03;
+  }
+  100% {
+    opacity: 1;
+    margin-top: 0;
+    scale: 1;
+  }
+}
+
+/* Hero spacer â€” removed, now handled by padding-top on .preloader__content */
+.preloader__hero-spacer {
+  display: none;
+}
+
+/* ============================================
+   HORIZON LINES â€” Expanding Reveal
+   ============================================ */
+
+.horizon-lines {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: clamp(280px, 60vw, 600px);
+  gap: 0;
+  height: clamp(4px, 0.6vw, 6px);
+  /* JS-measured positioning via --pl-horizon-y */
+  position: absolute;
+  top: var(--pl-horizon-y, 72vh);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: var(--z-content);
+}
+
+.horizon-line {
+  height: clamp(2px, 0.3vw, 3px);
+  transition: width 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  will-change: width;
+  border-radius: 2px;
+}
+
+.horizon-line--left {
+  background: var(--neo-yellow);
+  box-shadow: 0 0 8px rgba(212, 255, 0, 0.4);
+}
+
+.horizon-line--right {
+  background: var(--neo-pink);
+  box-shadow: 0 0 8px rgba(255, 0, 160, 0.3);
+}
+
+/* ============================================
+   EXIT ANIMATION â€” Curtain Close
+   ============================================ */
+
+.preloader--exiting {
+  animation: preloaderCurtainClose 0.9s cubic-bezier(0.75, 0, 0.25, 1) forwards;
+}
+
+.preloader--exiting .horizon-lines {
+  animation: horizonExit 0.4s ease forwards;
+}
+
+@keyframes preloaderCurtainClose {
+  0% {
+    clip-path: inset(0 0 0 0);
+    opacity: 1;
+  }
+  100% {
+    clip-path: inset(50% 0 50% 0);
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
+@keyframes horizonExit {
+  0% { opacity: 1; }
+  100% { opacity: 0; transform: scaleY(5); }
+}
+
+.camera-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-noise);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* Dense solid background instead of backdrop-filter blur — zero GPU cost */
+  background: rgba(17, 17, 17, 0.88);
+  padding: 2rem;
+  animation: overlayFadeIn 0.4s ease both;
+}
+
+@keyframes overlayFadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+.preloader__camera-card {
+  background: var(--neo-green);
+  border: var(--border-width) solid var(--neo-black);
+  border-radius: clamp(10px, 1.5vw, 16px);
+  padding: clamp(1rem, 2.5vw, 2rem) clamp(1.2rem, 3vw, 2.5rem);
+  box-shadow: clamp(4px, 0.8vw, 8px) clamp(4px, 0.8vw, 8px) 0px var(--neo-black);
+  max-width: min(480px, 90vw);
+  width: 100%;
+  text-align: center;
+  position: relative;
+  animation: cameraCardEntry 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+  /* Cardboard texture */
+  overflow: hidden;
+}
+
+.preloader__camera-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
+  z-index: var(--z-base);
+  mix-blend-mode: multiply;
+}
+
+.preloader__camera-card>* {
+  position: relative;
+  z-index: var(--z-flat);
+}
+
+.preloader__camera-card--denied {
+  background: var(--neo-pink);
+}
+
+@keyframes cameraCardEntry {
+  0% {
+    transform: translateY(50px) rotate(-4deg) scale(0.8);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateY(0) rotate(0deg) scale(1);
+    opacity: 1;
+  }
+}
+
+.preloader__camera-icon {
+  font-size: clamp(2.5rem, 4vw + 1rem, 3.5rem);
+  margin-bottom: clamp(0.3rem, 0.5vw, 0.5rem);
+  animation: cameraIconBounce 2s ease-in-out infinite;
+}
+
+@keyframes cameraIconBounce {
+
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+
+  25% {
+    transform: translateY(-5px) rotate(-5deg);
+  }
+
+  75% {
+    transform: translateY(-3px) rotate(3deg);
+  }
+}
+
+.preloader__camera-title {
+  font-family: var(--font-heading);
+  font-size: clamp(1.5rem, 4vw, 2.2rem);
+  font-weight: 900;
+  color: var(--neo-black);
+  text-transform: uppercase;
+  letter-spacing: -1px;
+  margin: 0 0 0.8rem 0;
+  line-height: 1.1;
+}
+
+.preloader__camera-desc {
+  font-size: clamp(0.85rem, 1vw + 0.3rem, 1rem);
+  font-weight: 600;
+  color: var(--neo-black);
+  line-height: 1.5;
+  margin-bottom: clamp(1rem, 1.5vw, 1.5rem);
+}
+
+.preloader__camera-btn {
+  font-size: clamp(1rem, 1.3vw + 0.3rem, 1.3rem) !important;
+  padding: clamp(0.6rem, 1vw, 0.9rem) clamp(1.5rem, 2.5vw, 2.5rem) !important;
+}
+
+/* Camera Denied Steps */
+.preloader__camera-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.preloader__step {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--neo-black);
+  background: rgba(255, 255, 255, 0.3);
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  border: 2px solid var(--neo-black);
+}
+
+.preloader__step-num {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--neo-black);
+  color: var(--neo-white);
+  border-radius: 50%;
+  font-family: var(--font-mono);
+  font-weight: 900;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+/* ============================
+   FOOTER LABEL
+   ============================ */
+
+.preloader__footer-label {
+  position: absolute;
+  bottom: clamp(1rem, 2.5vh, 2rem);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.preloader__made-by {
+  font-family: var(--font-mono);
+  font-size: clamp(0.5rem, 0.7vw + 0.2rem, 0.7rem);
+  font-weight: 800;
+  letter-spacing: clamp(1.5px, 0.3vw, 3px);
+  text-transform: uppercase;
+  color: var(--neo-black);
+  opacity: 0.4;
+  white-space: nowrap;
+}
